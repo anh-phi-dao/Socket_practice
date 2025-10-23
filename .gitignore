@@ -1,0 +1,4 @@
+*.o
+*.txt
+create_binary_file
+main
