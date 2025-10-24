@@ -3,6 +3,7 @@
 #include <sys/poll.h>
 
 char buff[1024];
+char message[1024];
 int val_write;
 int val_read;
 
@@ -29,7 +30,7 @@ int main()
     }
 
     /*check the close condition*/
-    int close_message = 0;
+    int message_handling = 0;
     while (1)
     {
         for (int i = 0; i < 1024; i++)
@@ -37,7 +38,7 @@ int main()
             buff[i] = 0;
         }
 
-        ret = poll(&connect_fdp, 1, 1);
+        ret = poll(&connect_fdp, 1, 0.1);
 
         if (ret > 0)
         {
@@ -60,32 +61,39 @@ int main()
             }
         }
 
-        ret = poll(read_fdps, MAXIMUM_CLIENT, 1);
-
-        if (ret > 0)
+        for (int i = 0; i < MAXIMUM_CLIENT; i++)
         {
-            for (int i = 0; i < MAXIMUM_CLIENT; i++)
+            if (read_fdps[i].fd > 2)
             {
-                if (read_fdps[i].fd > 2)
+                ret = poll(read_fdps + i, 1, 1);
+                if (ret > 0)
                 {
-                    close_message = handling_message_for_multiple_clients(read_fdps + i, client_fd + i, buff);
+                    message_handling = handling_message_for_multiple_clients(read_fdps + i, client_fd + i, message);
+                    if (message_handling == FIND_FILE)
+                    {
+                        find_file_following_client_request(message, buff, client_fd + i);
+                    }
+                    break;
                 }
             }
         }
 
-        if (close_message == 1)
+        if (message_handling == CLOSE_MESSAGE)
         {
             for (int i = 0; i < MAXIMUM_CLIENT; i++)
             {
                 if (client_fd[i] > 0)
                 {
+                    writen(client_fd[i], "Closing connect from server\n", 29);
                     close(client_fd[i]);
+                    client_fd[i] = 0;
                 }
             }
             break;
         }
     }
 
+    printf("Closing the server\n");
     /*Close the server socket*/
     close(server_fd);
 

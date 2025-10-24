@@ -75,7 +75,7 @@ int accept_client_connection(struct sockaddr_in *server_addr, int *server_fd, in
     }
 
 out:
-    printf("Successfully connected to TCP client\n");
+    printf("Successfully connected to TCP client\n\n");
     return 0;
 }
 
@@ -101,30 +101,46 @@ int get_client_information(int *client_fd, socklen_t *len)
     return SUCCESS;
 }
 
-int handling_message_for_multiple_clients(struct pollfd *fds, int *client_fd, char *buff)
+int handling_message_for_multiple_clients(struct pollfd *fds, int *client_fd, char *message_file_name)
 {
-    int close_mess = 0;
+    int handling_message = 0;
 
-    if ((fds->revents & POLLIN) == POLLIN)
+    if (fds->revents & POLLIN)
     {
-        int val_read = read(fds->fd, buff, 1024);
+        int val_read = read(fds->fd, message_file_name, 1024);
         if (val_read == 0)
         {
             close(fds->fd);
             *client_fd = 0;
             fds->fd = 0;
-            printf("Client disconnected\n");
+            printf("Client disconnected\n\n");
         }
         else
         {
-            printf("From client: %s\n", buff);
-            writen(*client_fd, "Server has received your message\n", 34);
+            handling_message = FIND_FILE;
         }
-        if (strcmp(buff, "Close") == 0)
+        if (strcmp(message_file_name, "Close") == 0)
         {
-            close_mess = 1;
+            handling_message = CLOSE_MESSAGE;
         }
     }
 
-    return close_mess;
+    return handling_message;
+}
+
+int find_file_following_client_request(char *file_name, char *buff, int *client_fd)
+{
+
+    FILE *fileptr = fopen(file_name, "rb");
+    if (fileptr == NULL)
+    {
+        get_client_information(client_fd, &len);
+        printf("Can not find the requested file\n");
+        writen(*client_fd, "Can not find the requested file\n", 33);
+        return FILE_NOT_FOUND;
+    }
+    fscanf(fileptr, "%1024[^\n]s", buff);
+    writen(*client_fd, buff, strlen(buff));
+    writen(*client_fd, "\n", 1);
+    return FILE_FOUND;
 }

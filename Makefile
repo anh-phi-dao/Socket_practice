@@ -13,6 +13,7 @@ INC_FLAG:= -I$(INC)/
 #build all target
 .PHONY: all
 all: main create_binary_file
+	rm *.o
 	@echo "You can run the program"
 
 #build relocatable object file

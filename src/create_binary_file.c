@@ -12,9 +12,19 @@ int main()
 
     fclose(fileptr);
 
-    fileptr = fopen("Viettel_High_Tech.txt", "wb");
+    fileptr = fopen("Viettel_High_Technology.txt", "wb");
 
     sprintf(string, "Viettel High Technology Industries Corporation is the key research and production unit of Viettel specialized in military and civilian sectors, who has successfully internalized a complete process from researching, designing to manufacturing and selling cutting edge technology solutions. Armed with a team of talented and experienced professionals; a culture that value collaboration and forward thinking, we envision ourselves as a modern, intellectual abundant technology company whose brand is recognized across the globe");
+
+    fputs(string, fileptr);
+
+    fclose(fileptr);
+
+    fileptr = fopen("Viettel_Aerospace_Institude.txt", "wb");
+
+    sprintf(string, "Viettel Aerospace Institute (VTX) under the Military Industry-Telecoms Group (Viettel) was established under the decision of the Minister of National Defense. When it was first established, there were only more than 30 officers and employees. Up to now, VTX has had a strong team of officers and scientists, carrying out the task of researching, manufacturing, and producing a number of strategic weapons for the Army and creating national miracles.");
+
+    fputs(string, fileptr);
 
     fclose(fileptr);
 
