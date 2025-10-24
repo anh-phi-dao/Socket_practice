@@ -38,7 +38,7 @@ int main()
         for (int i = 0; i < 5; i++)
         {
 
-            val_read = readline(client_fd, buff, 1024);
+            val_read = read(client_fd, buff, 1024);
             if (val_read > 0)
             {
                 printf("Num of bytes read %d\n", val_read);
