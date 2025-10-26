@@ -1,8 +1,9 @@
 SRC:=src/%.c #usage of wildcard
 INC:=include
-BUILD:=%.o
-OBJECT:=main.o multiple_client_server.o socket.o 
-FILE:=create_binary_file.o
+BUILD:=src/%.o
+LIST_SRC:=$(wildcard src/*.c)
+OBJECT:=$(LIST_SRC:%.c=%.o) 
+FILE:=create_file/create_binary_file
 CC:=gcc
 TEMP_FLAG:=
 CFLAG:=-c -Wall  -g $(TEMP_FLAG)
@@ -13,7 +14,7 @@ INC_FLAG:= -I$(INC)/
 #build all target
 .PHONY: all
 all: main create_binary_file
-	rm *.o
+	rm src/*.o
 	@echo "You can run the program"
 
 #build relocatable object file
@@ -25,8 +26,12 @@ main: $(OBJECT)
 	$(CC) $(LFLAG)  $^ -o $@ 
 	@echo "$@ program has been compiled sucessfully"
 
-create_binary_file: $(FILE)
+create_binary_file: $(FILE).o
 	$(CC) $(LFLAG)  $^ -o $@ 
+	rm $^
+
+$(FILE).o : $(FILE).c
+	$(CC) $(CFLAG) $^ -o $@ 
 
 #debug command
 .PHONY: debug
@@ -41,9 +46,9 @@ excecute: main
 #clean the program and unessesary file
 .PHONY: clean
 clean:
-	- rm *i
-	- rm *s 
-	- rm *o 
-	- rm *map
+	- rm *.i
+	- rm *.s 
+	- rm *.o 
+	- rm *.map
 	- rm main 
-	
+	- rm create_binary_file
