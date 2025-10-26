@@ -11,19 +11,23 @@ int val_read;
 
 int main()
 {
+    /*create an TCP client using IPv4 address*/
     if (create_TCP_IPv4_client(&client_fd, &len) == ERROR)
     {
         return -1;
     }
-
+    /*identify the server IPv4 address and server's port*/
     if (connect_to_TCP_IPv4_server(&server_address, SERVER_IP, PORT, &client_fd, &len) == ERROR)
     {
         return -1;
     }
+    /*Request a file name, if this file exist in server, client will receive the data from the file*/
     while (1)
     {
+        /*Request file name*/
         printf("Please enter the file: ");
         scanf("%s", file_name);
+        /*Send the file name to server*/
         val_write = writen(client_fd, file_name, 100);
         if (val_write != 100)
         {
@@ -34,7 +38,8 @@ int main()
         {
             printf("\nNumber of bytes have been sent :%d\n\n", val_write);
         }
-
+        /*Read the TCP socket, if there are data or message from server, print out to terminal*/
+        /*If the number of characters read from socket is 0, this means the server has closed*/
         for (int i = 0; i < 5; i++)
         {
 
