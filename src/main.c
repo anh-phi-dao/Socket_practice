@@ -23,7 +23,8 @@ int main()
     while (1)
     {
         printf("Please enter the file: ");
-        scanf("%s", file_name);
+        scanf("\n");
+        scanf("%100[^\n]s", file_name);
         val_write = writen(client_fd, file_name, 100);
         if (val_write != 100)
         {
