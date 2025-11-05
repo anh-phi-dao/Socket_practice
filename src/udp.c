@@ -6,7 +6,7 @@ int val_read;
 int main()
 {
 
-    create_UDP_IPv4_client(&client_udp_fd);
+    create_UDP_IPv4_client_with_specified_port(&client_udp_fd, &client, 8800, &len);
 
     create_UDP_IPv4_server_address(&server, "192.168.27.167", PORT);
 
