@@ -22,7 +22,8 @@ int main()
 
     create_UDP_IPv4_server(&server, PORT, &server_udp_fd, &len);
 
-    create_UDP_IPv4_client_address(&client, "127.0.0.1", PORT);
+    /*in client, kernel will bind random port*/
+    create_UDP_IPv4_client_address(&client, "192.168.27.167", 8800);
     int i = 0;
     do
     {
